@@ -9,10 +9,10 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            steps {
-                git 'https://github.com/FouedBenRhayem/docker-test.git'
-            }
-        }
+             steps {
+        git branch: 'main', url: 'https://github.com/FouedBenRhayem/docker-test.git'
+    }
+}
 
         stage('Build Docker Image') {
             steps {
