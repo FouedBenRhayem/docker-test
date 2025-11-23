@@ -2,17 +2,32 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USER = 'fouedddd'                // Ton username DockerHub
+        DOCKER_USER = 'fouedddd'     // Ton username DockerHub
         DOCKER_REPO = 'mywebapp'
         IMAGE_NAME = "${DOCKER_USER}/${DOCKER_REPO}"
     }
 
     stages {
+
         stage('Checkout') {
-             steps {
-        git branch: 'main', url: 'https://github.com/FouedBenRhayem/docker-test.git'
-    }
-}
+            steps {
+                git branch: 'main', url: 'https://github.com/FouedBenRhayem/docker-test.git'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    sh """
+                        docker run --rm \
+                            -v $PWD:/usr/src \
+                            -e SONAR_HOST_URL=http://localhost:9000 \
+                            -e SONAR_LOGIN=$SONAR_TOKEN \
+                            sonarsource/sonar-scanner-cli
+                    """
+                }
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
