@@ -15,19 +15,20 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh """
-                        docker run --rm \
-                            -v $PWD:/usr/src \
-                            -e SONAR_HOST_URL=http://localhost:9000 \
-                            -e SONAR_LOGIN=$SONAR_TOKEN \
-                            sonarsource/sonar-scanner-cli
-                    """
-                }
-            }
+    	stage('SonarQube Analysis') {
+    	    steps {
+        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+            sh """
+                docker run --rm \
+                    -v $PWD:/usr/src \
+                    -e SONAR_HOST_URL=http://172.17.0.1:9000 \
+                    -e SONAR_LOGIN=$SONAR_TOKEN \
+                    sonarsource/sonar-scanner-cli
+            """
         }
+    }
+}
+
 
         stage('Build Docker Image') {
             steps {
