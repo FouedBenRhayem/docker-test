@@ -5,6 +5,7 @@ pipeline {
         DOCKER_USER = 'fouedddd'     // Ton username DockerHub
         DOCKER_REPO = 'mywebapp'
         IMAGE_NAME = "${DOCKER_USER}/${DOCKER_REPO}"
+        SONAR_HOST = "http://172.17.0.1:9000" // IP Docker de l'hôte Ubuntu
     }
 
     stages {
@@ -21,7 +22,7 @@ pipeline {
                     sh script: '''#!/bin/bash
 docker run --rm \
     -v "$PWD":/usr/src \
-    -e SONAR_HOST_URL=http://172.17.0.1:9000 \
+    -e SONAR_HOST_URL="$SONAR_HOST" \
     -e SONAR_LOGIN="$SONAR_TOKEN" \
     sonarsource/sonar-scanner-cli
 '''
