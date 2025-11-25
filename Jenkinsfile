@@ -18,21 +18,22 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh '''#!/bin/bash
-docker run --rm \
-    -v "$PWD":/usr/src \
-    -e SONAR_HOST_URL="${SONAR_HOST}" \
-    -e SONAR_LOGIN="${SONAR_TOKEN}" \
-    sonarsource/sonar-scanner-cli \
-    -Dsonar.projectKey="${SONAR_PROJECT_KEY}" \
-    -Dsonar.sources="${SONAR_SOURCES}"
-'''
-                }
-            }
+stage('SonarQube Analysis') {
+    steps {
+        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+            sh """
+            docker run --rm \
+                -v "$PWD":/usr/src \
+                -e SONAR_HOST_URL="${SONAR_HOST}" \
+                -e SONAR_LOGIN="${SONAR_TOKEN}" \
+                sonarsource/sonar-scanner-cli \
+                -Dsonar.projectKey="${SONAR_PROJECT_KEY}" \
+                -Dsonar.sources="${SONAR_SOURCES}"
+            """
         }
+    }
+}
+
 
         stage('Build Docker Image') {
             steps {
