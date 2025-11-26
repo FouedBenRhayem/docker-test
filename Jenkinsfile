@@ -24,11 +24,14 @@ stage('SonarQube Analysis') {
             sh """
             docker run --rm \
                 -v "$PWD":/usr/src \
+                -w /usr/src \
                 -e SONAR_HOST_URL="${SONAR_HOST}" \
-                -e SONAR_LOGIN="${SONAR_TOKEN}" \
-                sonarsource/sonar-scanner-cli \
+                -e SONAR_TOKEN="${SONAR_TOKEN}" \
+                sonarsource/sonar-scanner-cli:latest \
                 -Dsonar.projectKey="${SONAR_PROJECT_KEY}" \
-                -Dsonar.sources="${SONAR_SOURCES}"
+                -Dsonar.sources="${SONAR_SOURCES}" \
+                -Dsonar.host.url="${SONAR_HOST}" \
+                -Dsonar.login="${SONAR_TOKEN}"
             """
         }
     }
